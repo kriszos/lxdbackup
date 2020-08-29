@@ -7,7 +7,7 @@
 ##	author: krzysztof.szostak[AT]gmx.com
 ##
 #####################################################################################################################################################################
-
+#test
 # how many daily backups to keep?
 dbn=22
 # how many weekly backups to keep?
@@ -36,7 +36,7 @@ ctbac () {
 				lxc snapshot $1 backup
 			fi
 		done
-		
+
 		# publish image from snapshot until it is published
 		echo `date +"%F %T   "` $1 "publishing image"
 		while true
@@ -49,7 +49,7 @@ ctbac () {
 			pub=`lxc publish $1/backup --public --alias backup`
 		done
 		echo `date +"%F %T   "` $1 $pub
-				
+
 		# delete snapshot until it doesn't exist
 		echo `date +"%F %T   "` $1 "deleting snapshot"
 		while true
@@ -61,7 +61,7 @@ ctbac () {
 				break
 			fi
 		done
-		
+
 		# export image until it is exported
 		while [ ! -f /backup/lxd/$1/$2/`date -I`-$1.tar.gz ]
 		do
@@ -70,7 +70,7 @@ ctbac () {
 			sleep 5
 		done
 		echo `date +"%F %T   "` $1 "image exported succesfully"
-		
+
 		# manage backup retency
 		curedire=`pwd`
 		cd /backup/lxd/$1/$2/
@@ -78,7 +78,7 @@ ctbac () {
 		echo `date +"%F %T   "` $1 deleting oldest $2 backup: $oldest
 		ls -1t | tail -n +$tbn | xargs rm -f
 		cd $curedire
-		
+
 		# delete image created for backup
 		echo `date +"%F %T   "` $1 "deleting image"
 		lxc image list -c l --format=csv | grep backup | while read LINE
@@ -86,7 +86,7 @@ ctbac () {
 			lxc image delete backup
 			sleep 5
 		done
-	
+
 	done
 	echo `date +"%F %T   "` $1 $2 "backup has been created or already existed"
 }
