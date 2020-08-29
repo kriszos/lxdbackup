@@ -35,11 +35,11 @@ Script verion 2.0 is approximately 2x faster than 1.0,
 due to new 'lxc export' command, but works only on LXD 3.1 and above.
 I tested it only on LXD 4.4 
 
-If You miss weekly or monthly backup script will correct it by moving daily backup as monthly or weekly,
+If You miss weekly or monthly backup, script will correct it by moving daily backup as monthly or weekly,
 up to 5 day afterward.
 Example above on directory structure tree in /backup/lxd/CT20/monthly (works only in script version 2.0 and above)
 
-At the end Script will print how much time it take to make a backup.
+At the end script will print how much time it took to make a backup.
 
 If You're using LXD from snap and running this script via crontab,
 remember to add PATH of SNAP binaries /snap/bin to crontab file, like that:
