@@ -2,7 +2,7 @@
 Bash script to make a backup of RUNNING LXD containers to a remote mount specified on 1st positional variable.
 Type of remote storage is up to You. I am using SMB and NFS
 
-Script is expected to mount remote destination ALWAYS to /backup, 
+Script is expected to mount remote destination ALWAYS to /backup,
 so make it immutable to avoid writing to this folder without mount:
 ```bash
 chattr -i /backup
@@ -31,9 +31,9 @@ Oldest backups are removed when number of files in daily/weekly/monthly director
 
 Script print what it is doing to STDOUT, you can forward it to a log file like on examples at the bottom.
 
-Script verion 2.0 is approximately 2x faster than 1.0,
+Script version 2.0 is approximately 2x faster than 1.0,
 due to new 'lxc export' command, but works only on LXD 3.1 and above.
-I tested it only on LXD 4.4 
+I tested it only on LXD 4.4
 
 If You miss weekly or monthly backup, script will correct it by moving daily backup as monthly or weekly,
 up to 5 day afterward.
@@ -49,7 +49,7 @@ If You find any bugs please report to krzysztof.szostak [ at ] gmx.com
 
 Examples:
 ```bash
-# backup to NFS share whit log to file
+# backup to NFS share with log to file
 bash lxdbackup.sh "mount [2001:db8::2:1]:/backup /backup/" >> /var/log/lxdbackup.log
 
 # backup to SAMBA share with log to STDOUT

@@ -3,7 +3,7 @@
 ##	version 2.0.5
 ##
 ##	THIS SCRIPT DON'T WORK ON LXD LOWER THAN 3.1 see README.md
-##	Script to backup LXD containers, tested with LXD 4.4 on Ubuntu 20.04
+##	Script to backup LXD containers, tested with LXD 4.4, 4.5, 4.6 on Ubuntu 20.04
 ##	Change backup retention. Destination provided as first positional parameter MUST be mounted to /backup
 ##	Exaples in README.md
 ##	author: krzysztof.szostak[AT]gmx.com
