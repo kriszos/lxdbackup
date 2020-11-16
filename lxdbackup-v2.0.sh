@@ -1,6 +1,6 @@
 #!/bin/bash
 #################################################################################################################################
-##	version 2.0.5
+##	version 2.0.6
 ##
 ##	THIS SCRIPT DON'T WORK ON LXD LOWER THAN 3.1 see README.md
 ##	Script to backup LXD containers, tested with LXD 4.4, 4.5, 4.6 on Ubuntu 20.04
@@ -106,22 +106,21 @@ ctbac () {
 		"3")	contweek3 $1 ;;
 		"4")	contweek4 $1 ;;
 		"5")	contweek5 $1 ;;
-		*)	echo "It was realy long month. Get some rest because 'Something is not YES'"
+		*)	echo `date +"%F %T   "` "'Something is not YES' invalid week $1 or today is weekly/monthly backup"
 	esac
 
 	# manage backup retency
+	curedire=`pwd`
+	cd /backup/lxd/$1/$2/
 	oldest=`ls -1t | tail -n +$tbn`
 	if [ ! -z "$oldest" ]
 	then
-		curedire=`pwd`
-		cd /backup/lxd/$1/$2/
 		echo `date +"%F %T   "` $1 deleting oldest $2 backup: $oldest
 		ls -1t | tail -n +$tbn | xargs rm -f
-		cd $curedire
 	else
 		echo `date +"%F %T   "` $1 "oldest" $2 "backup not deleted"
 	fi
-
+	cd $curedire
 	echo `date +"%F %T   "` $1 $2 "backup has been created or already existed"
 }
 
@@ -165,7 +164,7 @@ case "$today" in
 	"15"|"16"|"17"|"18"|"19"|"20")	varly=daily ; week=3 ; tbn="$dbn" ;;
 	"22"|"23"|"24"|"25"|"26"|"27")	varly=daily ; week=4 ; tbn="$dbn" ;;
 	"29"|"30"|"31")			varly=daily ; week=5 ; tbn="$dbn" ;;
-	*) varly=daily ; tbn="$dbn" ; echo "It was realy long month. Get some rest because 'Something is not YES'"
+	*) varly=daily ; tbn="$dbn" ; echo `date +"%F %T   "` "'Something is not YES' invalid day $today"
 esac
 
 # get list of RUNNING containers
