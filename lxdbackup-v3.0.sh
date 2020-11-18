@@ -1,6 +1,6 @@
 #!/bin/bash
 #################################################################################################################################
-##	version 2.0.6
+##	version 3.0.0
 ##
 ##	THIS SCRIPT DON'T WORK ON LXD LOWER THAN 3.1 see README.md
 ##	Script to backup LXD containers, tested with snap LXD 4.4, 4.5, 4.6, 4.7, 4.8 on Ubuntu 16.04 and 20.04
