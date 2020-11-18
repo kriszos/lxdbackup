@@ -10,6 +10,7 @@
 ##
 #################################################################################################################################
 
+
 # how many daily backups to keep
 dbn=22
 # how many weekly backups to keep
@@ -17,6 +18,11 @@ wbn=12
 # how many monthly backups to keep
 mbn=12
 
+# set path to destination directory
+destdir="/backup/lxd"
+
+# check LXD version
+lxdver=`lxd version | awk -F. '{ print ($1*1000000)+($2*1000)+$3 }'`
 
 # get todays date for file name
 namedate=`date -I`
@@ -24,56 +30,56 @@ namedate=`date -I`
 # functions to manage continuity
 contweek1 (){
 	shouldname=`date +%Y-%m-01`
-	shouldexist=`ls /backup/lxd/$1/monthly/ |grep $shouldname`
+	shouldexist=`ls $destdir/$1/monthly/ |grep $shouldname`
 	if [ -z "$shouldexist" ]
 	then
 		echo `date +"%F %T   "` $1 "moving today's daily backup to complete monthly backup"
-		mv /backup/lxd/$1/daily/`date -I`* /backup/lxd/$1/monthly/`date +%Y-%m-01`-from-$today-$1.tar.gz
-		echo `date +"%F %T   "` $1 "new monthly name:" `date +%Y-%m-01`"-from-"$today"-"$1".tar.gz"
+		mv $destdir/$1/daily/$namedate* $destdir/$1/monthly/$shouldname-from-$today-$1.tar.gz
+		echo `date +"%F %T   "` $1 "new monthly name:" $shouldname"-from-"$today"-"$1".tar.gz"
 	fi
 }
 
 contweek2 (){
 	shouldname=`date +%Y-%m-07`
-	shouldexist=`ls /backup/lxd/$1/weekly/ |grep $shouldname`
+	shouldexist=`ls $destdir/$1/weekly/ |grep $shouldname`
 	if [ -z "$shouldexist" ]
 	then
 		echo `date +"%F %T   "` $1 "moving today's daily backup to complete weekly backup"
-		mv /backup/lxd/$1/daily/`date -I`* /backup/lxd/$1/weekly/`date +%Y-%m-07`-from-$today-$1.tar.gz
-		echo `date +"%F %T   "` $1 "new weekly name:" `date +%Y-%m-07`"-from-"$today"-"$1".tar.gz"
+		mv $destdir/$1/daily/$namedate* $destdir/$1/weekly/$shouldname-from-$today-$1.tar.gz
+		echo `date +"%F %T   "` $1 "new weekly name:" $shouldname"-from-"$today"-"$1".tar.gz"
 	fi
 }
 
 contweek3 (){
 	shouldname=`date +%Y-%m-14`
-	shouldexist=`ls /backup/lxd/$1/weekly/ |grep $shouldname`
+	shouldexist=`ls $destdir/$1/weekly/ |grep $shouldname`
 	if [ -z "$shouldexist" ]
 	then
 		echo `date +"%F %T   "` $1 "moving today's daily backup to complete weekly backup"
-		mv /backup/lxd/$1/daily/`date -I`* /backup/lxd/$1/weekly/`date +%Y-%m-14`-from-$today-$1.tar.gz
-		echo `date +"%F %T   "` $1 "new weekly name:" `date +%Y-%m-14`"-from-"$today"-"$1".tar.gz"
+		mv $destdir/$1/daily/$namedate* $destdir/$1/weekly/$shouldname-from-$today-$1.tar.gz
+		echo `date +"%F %T   "` $1 "new weekly name:" $shouldname"-from-"$today"-"$1".tar.gz"
 	fi
 }
 
 contweek4 (){
 	shouldname=`date +%Y-%m-21`
-	shouldexist=`ls /backup/lxd/$1/weekly/ |grep $shouldname`
+	shouldexist=`ls $destdir/$1/weekly/ |grep $shouldname`
 	if [ -z "$shouldexist" ]
 	then
 		echo `date +"%F %T   "` $1 "moving today's daily backup to complete weekly backup"
-		mv /backup/lxd/$1/daily/`date -I`* /backup/lxd/$1/weekly/`date +%Y-%m-21`-from-$today-$1.tar.gz
-		echo `date +"%F %T   "` $1 "new weekly name:" `date +%Y-%m-21`"-from-"$today"-"$1".tar.gz"
+		mv $destdir/$1/daily/$namedate* $destdir/$1/weekly/$shouldname-from-$today-$1.tar.gz
+		echo `date +"%F %T   "` $1 "new weekly name:" $shouldname"-from-"$today"-"$1".tar.gz"
  	fi
 }
 
 contweek5 (){
 	shouldname=`date +%Y-%m-28`
-	shouldexist=`ls /backup/lxd/$1/weekly/ |grep $shouldname`
+	shouldexist=`ls $destdir/$1/weekly/ |grep $shouldname`
 	if [ -z "$shouldexist" ]
 	then
 		echo `date +"%F %T   "` $1 "moving today's daily backup to complete weekly backup"
-		mv /backup/lxd/$1/daily/`date -I`* /backup/lxd/$1/weekly/`date +%Y-%m-28`-from-$today-$1.tar.gz
-		echo `date +"%F %T   "` $1 "new weekly name:" `date +%Y-%m-28`"-from-"$today"-"$1".tar.gz"
+		mv $destdir/$1/daily/$namedate* $destdir/$1/weekly/$shouldname-from-$today-$1.tar.gz
+		echo `date +"%F %T   "` $1 "new weekly name:" $shouldname"-from-"$today"-"$1".tar.gz"
 	fi
 }
 
@@ -82,21 +88,21 @@ ctbac () {
 	# $1 << container name 		$2 << daily, weekly or  monthly
 	echo `date +"%F %T   "` $1
 	# make directory for backups
-	mkdir -p /backup/lxd/$1/daily
-	mkdir -p /backup/lxd/$1/weekly
-	mkdir -p /backup/lxd/$1/monthly
+	mkdir -p $destdir/$1/daily
+	mkdir -p $destdir/$1/weekly
+	mkdir -p $destdir/$1/monthly
 
 	# export backup until it is exported
-	while [ ! -f /backup/lxd/$1/$2/$namedate-$1.tar.gz ]
+	while [ ! -f $destdir/$1/$2/$namedate-$1.tar.gz ]
 	do
 		echo `date +"%F %T   "` $1 "can't find todays backup, exporting backup"
 		# export container backup without snapshots (--instance-only)
-		expo=$(lxc export $1 /backup/lxd/$1/$2/$namedate-$1.tar.gz --instance-only)
+		expo=$(lxc export $1 $destdir/$1/$2/$namedate-$1.tar.gz --instance-only)
 		echo `date +"%F %T   "` $1 "container backup exported succesfully"
 	done
 
 	# print backup name and size
-	bacsizename=`ls -sh /backup/lxd/$1/$2/ |grep $namedate`
+	bacsizename=`ls -sh $destdir/$1/$2/ |grep $namedate`
 	echo `date +"%F %T   "` $1 "today's backup:" $bacsizename
 
 	#manage backup continuity by calling function contweekN
@@ -111,7 +117,7 @@ ctbac () {
 
 	# manage backup retency
 	curedire=`pwd`
-	cd /backup/lxd/$1/$2/
+	cd $destdir/$1/$2/
 	oldest=`ls -1t | tail -n +$tbn`
 	if [ ! -z "$oldest" ]
 	then
